@@ -1,7 +1,15 @@
 const crypto = require('crypto');
 
-const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // 32 bytes
-const IV_LENGTH = 16; // for AES, this is always 16
+if (!process.env.ENCRYPTION_KEY) {
+  throw new Error('ENCRYPTION_KEY environment variable is not set');
+}
+
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex');
+const IV_LENGTH = 16;
+
+if (ENCRYPTION_KEY.length !== 32) {
+  throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (64 hex characters)');
+}
 
 function encrypt(text) {
   const iv = crypto.randomBytes(IV_LENGTH);
